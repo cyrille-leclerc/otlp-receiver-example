@@ -6,16 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class OtlpServer {
     final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Server server;
-    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
-        // See https://github.com/opensearch-project/data-prepper/blob/main/data-prepper-plugins/otel-trace-source/src/main/java/org/opensearch/dataprepper/plugins/source/oteltrace/OTelTraceSource.java#L104
-
+    public static void main(String[] args) throws InterruptedException, IOException {
         OtlpServer otlpServer = new OtlpServer();
         otlpServer.start();
         otlpServer.blockUntilShutdown();
@@ -23,17 +20,16 @@ public class OtlpServer {
     }
 
     public void start() throws IOException {
-        TracesHandler oTelTraceGrpcService = new TracesHandler();
-        LogsHandler logsHandler = new LogsHandler();
 
         this.server = ServerBuilder
                 .forPort(4316)
-                .addService(oTelTraceGrpcService)
-                .addService(logsHandler)
+                .addService(new TracesHandler())
+                .addService(new LogsHandler())
+                .addService(new MetricsHandler())
                 .build();
         server.start();
 
-        logger.debug("OTLP Server started on port: " + server.getPort());
+        logger.info("OTLP Server started on port: " + server.getPort());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             // Use stderr here since the logger may have been reset by its JVM shutdown hook.

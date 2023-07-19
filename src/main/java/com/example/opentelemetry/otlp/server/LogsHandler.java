@@ -19,7 +19,7 @@ public class LogsHandler extends LogsServiceGrpc.LogsServiceImplBase {
         for(ResourceLogs resourceLogs: request.getResourceLogsList()) {
             for(ScopeLogs scopeLogs: resourceLogs.getScopeLogsList()) {
                 for(LogRecord logRecord: scopeLogs.getLogRecordsList()) {
-                    logger.debug(logRecord.getBody().getStringValue());
+                    logger.info(logRecord.getBody().getStringValue());
                 }
             }
         }

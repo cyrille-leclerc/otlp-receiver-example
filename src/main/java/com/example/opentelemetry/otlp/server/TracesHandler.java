@@ -23,7 +23,7 @@ public class TracesHandler extends TraceServiceGrpc.TraceServiceImplBase {
             for (ScopeSpans scopeSpans : resourceSpans.getScopeSpansList()) {
                 logger.debug("Scope: " + scopeSpans.getScope().getName() + ":" + scopeSpans.getScope().getVersion());
                 for (Span span : scopeSpans.getSpansList()) {
-                    logger.debug("Span: " + span.getName() + ", starts=" + span.getStartTimeUnixNano());
+                    logger.info("Span: " + span.getName() + ", starts=" + span.getStartTimeUnixNano());
                 }
             }
         }
